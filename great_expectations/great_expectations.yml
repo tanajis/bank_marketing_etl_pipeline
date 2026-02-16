@@ -1,0 +1,10 @@
+datasources:
+  snowflake_default:
+    class_name: Datasource
+    execution_engine:
+      class_name: SqlAlchemyExecutionEngine
+      connection_string: snowflake://{{SNOWFLAKE_USER}}:{{SNOWFLAKE_PASSWORD}}@LVJDZHL-JQ23736/BANK_MARKETING/RAW?warehouse=BANK_WH
+    data_connectors:
+      default_inferred_data_connector_name:
+        class_name: InferredAssetSqlDataConnector
+        include_schema_name: true

@@ -1,0 +1,76 @@
+venv/Scripts/Activate.ps1
+
+
+--------------------
+
+
+
+
+
+ALTER USER SUTARTM 
+SET MINS_TO_BYPASS_NETWORK_POLICY_REQUIREMENT = 60;
+
+SHOW USER PROGRAMMATIC ACCESS TOKENS FOR USER SUTARTM;
+
+ALTER USER SUTARTM MODIFY PROGRAMMATIC ACCESS TOKEN BANK_PIPELINE_TOKEN 
+  SET MINS_TO_BYPASS_NETWORK_POLICY_REQUIREMENT = 60;
+
+---------------------------------------------------
+
+
+USE DATABASE BANK_MARKETING
+USE SCHEMA RAW
+
+
+-- Create STage 
+CREATE STAGE BANK_MARKETING.RAW.RAW_BANK_DATA 
+FILE_FORMAT = (
+    TYPE = CSV 
+    FIELD_DELIMITER = ',' 
+    SKIP_HEADER = 1
+);
+
+
+SHOW STAGES IN SCHEMA BANK_MARKETING.RAW;
+
+LIST @BANK_MARKETING.RAW.RAW_BANK_DATA
+select $1 from @RAW_BANK_DATA
+
+---------------------------------------------------------
+CREATE OR REPLACE TABLE BANK_MARKETING.RAW.bank_marketing_data (
+    age INTEGER,
+    job STRING,
+    marital STRING,
+    education STRING,
+    default_ STRING,
+    balance INTEGER,
+    housing STRING,
+    loan STRING,
+    contact STRING,
+    day INTEGER,
+    month STRING,
+    duration INTEGER,
+    campaign INTEGER,
+    pdays INTEGER,
+    previous INTEGER,
+    poutcome STRING,
+    deposit STRING
+);
+
+-------------------------------------------
+
+
+COPY INTO  BANK_MARKETING.RAW.bank_marketing_data
+FROM @BANK_MARKETING.RAW.RAW_BANK_DATA
+FILE_FORMAT = (FORMAT_NAME = 'mycsv') ----- If we run twice -- it does not copy if already loaded.
+
+
+
+---- Check History Last 7 days:
+SELECT *
+FROM TABLE(INFORMATION_SCHEMA.COPY_HISTORY(
+    TABLE_NAME => 'BANK_MARKETING_DATA',
+    START_TIME => DATEADD(day, -7, CURRENT_TIMESTAMP())
+));
+
+Check Last load time, row count , row count parsed, file size and status : loaded
