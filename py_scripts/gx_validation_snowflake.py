@@ -48,7 +48,10 @@ batch_request = BatchRequest(**batch_request_dict)
 
 validator = context.get_validator( 
     datasource_name=datasource_name,
-    data_asset_name=asset_name
+    data_asset_name=asset_name,
+    options={
+        "sql_where": "age > 30 AND marital = 'married'"
+    }
 )
 validator.head()
 
