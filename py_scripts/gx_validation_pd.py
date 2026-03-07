@@ -6,7 +6,7 @@ BASE_DIR = Path(__file__).parent.parent
 CSV_FILE_PATH = BASE_DIR / "data" / "bank_marketing_data.csv"
 
 # Entry point
-context = gx.get_context(mode='ephemeral') # ephemeral does not stare metata for future validations
+context = gx.get_context(mode='ephemeral') # ephemeral does not stare metadata for future validations
 
 # 1.Create Data Source(Pandas)
 ds = context.data_sources.add_pandas(name="ds_raw_bank_marketing")
@@ -51,3 +51,18 @@ df =pd.read_csv(CSV_FILE_PATH)
 batch_param = {"dataframe": df}
 result = checkpoint.run(batch_parameters=batch_param)
 print(result)
+
+# # Create EMail Actions
+# action_email = gx.EmailAction(
+#     name = "send_email",
+#     notify_on = "all",
+#     smtp_address = "smtp.mail.me.com",
+#     smtp_port = "587"
+#     sender_login = os.environ.get("SMTP_USER") 
+#     sender_password = os.environ.get("SMTP_PASSWORD") 
+#     sender_alias = os.environ.get("") 
+#     receiver_emails = os.environ.get("EMAIL_RECIPIENTS") 
+#     use_tls = True
+#     use_ssl = False
+
+# )
